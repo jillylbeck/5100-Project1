@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>INFO 5100 - Project 1 </title>
+    <ul> 
+        <li> 
+         Jillian Beck - JLB574
+        </li>
+        <li> 
+            Hung Ming Tseng - ht495
+        </li>
+        <li> 
+            Peipei Duan - pd439
+        </li>
+    </ul>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+    <style>
+    
+      .legend span {
+        margin-right: 10px;
+      }
+        
+      .gridlines line {
+        stroke: #bbb;
+      }
+      
+      .gridlines .domain {
+        stroke: none;
+      }
+      
+  
+    </style>
+
+</head>
+
+<body> 
+
+    <h3> Introduction </h3>
+    <p> For our project, we intend to investigate the frequency of animal rescues within NYC Buroughs over a 5 year time frame, and the relationship between animals rescued and their respective species </p>
+    
+    <p>
+    <svg id="graph" height="600" width="600" style="background:rgb(221, 206, 250);"> </svg>
+    
+    <script> 
+    d3.csv("Urban_Park_Ranger_Animal_Condition_Response_20241001.csv", d3.autoType)
+    .then( (data) => {
+        console.log(data);
+
+    const svg = d3.select("svg#graph");
+        
+
+    });
+    </script>
+    </p> 
+</body>
