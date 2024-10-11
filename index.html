@@ -222,8 +222,6 @@
         <svg id="map" height="800" width="800"></svg>
         <svg id="legend" width="200" height="450"></svg>
 
-
-
         <script>
             const svg = d3.select("#map");
             const width = +svg.attr("width");
@@ -245,7 +243,7 @@
 
                 svg.selectAll(".borough")
                     .data(data.features)
-                    .enter().append("path")
+                    .join("path")
                     .attr("class", "borough")
                     .attr("d", path)
                     .attr("fill", d => {
@@ -258,41 +256,31 @@
                     legendHeight = +legend.attr("height");
 
                 const quantileLabels = colorScale.quantiles();
-
                 const legendLabels = [0].concat(quantileLabels);
-
-
                 const rectHeight = legendHeight / legendLabels.length;
 
-                legendLabels.forEach((d, i) => {
-                    legend.append("rect")
-                        .attr("x", 10)
-                        .attr("y", i * rectHeight)
-                        .attr("width", 20)
-                        .attr("height", rectHeight)
-                        .attr("fill", colorScale(d));
-                });
-
-
+                legend.selectAll("rect")
+                    .data(legendLabels)
+                    .join("rect")
+                    .attr("x", 10)
+                    .attr("y", (d, i) => i * rectHeight)
+                    .attr("width", 20)
+                    .attr("height", rectHeight)
+                    .attr("fill", d => colorScale(d));
 
                 legend.selectAll(".legend-text")
                     .data(legendLabels)
-                    .enter().append("text")
+                    .join("text")
                     .attr("class", "legend-text")
                     .attr("x", 40)
                     .attr("y", (d, i) => (i + 0.5) * (legendHeight / legendLabels.length) - 36)
                     .text(d => Math.round(d));
-
-
-
-
-            })
-
-
-
-
-
+            });
         </script>
+
+
+
+
 
 
 
