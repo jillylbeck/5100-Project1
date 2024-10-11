@@ -37,18 +37,36 @@
         .legend-text {
             font-size: 10px;
         }
+
+        p {
+          text-align: center;
+          padding: 10px;
+          justify-content: center;
+        }
+
+        h1 {
+          text-align: center;
+        }
+
+        h2 {
+          text-align: center;
+        }
+
+
     </style>
 
 </head>
 
 <body>
 
-    <h3> Introduction </h3>
-    <p> For our project, we intend to investigate the frequency of animal rescues within NYC Boroughs over a 5 year time
-        frame, and the relationship between animals rescued and their respective species </p>
+    <h1> Project Topic</h1>
+    <p> For our project, we used a government data set from the Department of Parks and Recreation, sourced from NYC Open Data, that includes Urban Park Ranger calls for animal rescues from 2018-2024. Using this data, we investigated the relationship between New York City's five boroughs and their amount of animal calls. We hypothesized that there would be a similar amount of calls across each borough, and that the most frequent animal in the call would be a rodent, such as mice or rats.  </p>
 
     <p>
-        <svg id="graph" height="600" width="800" style="margin-top:50px"> </svg>
+
+      <h2> Visualization One: Scatter Plot</h2>
+      <p> Animal Calls across Boroughs with the Number of Animals at the Scene and Their Respective Species <p>
+        <svg id="graph" height="800" width="1100" style="margin-top:50px"> </svg>
 
         <script>
             d3.csv("Urban_Park_Ranger_Animal_Condition_Response_20241001.csv", d3.autoType)
@@ -58,7 +76,7 @@
                     const svg = d3.select("#graph");
                     const width = svg.attr("width");
                     const height = svg.attr("height");
-                    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+                    const margin = { top: 50, right: 50, bottom: 70, left: 70 };
                     const chartWidth = width - margin.left - margin.right;
                     const chartHeight = height - margin.top - margin.bottom;
                     const graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -127,7 +145,7 @@
                     });
 
                     clean_data = data.filter(d => {
-                        return d["# of Animals"] >= 1 && d["# of Animals"] <= 50;
+                        return d["# of Animals"] >= 2 && d["# of Animals"] <= 30;
                     });
 
                     console.log("Filtered Data:", clean_data);
@@ -139,7 +157,7 @@
                     const xScale = d3.scaleBand().domain(boroughs).range([0, chartWidth]);
 
                     const animalExtent = d3.extent(clean_data, d => d['# of Animals']);
-                    const yScale = d3.scaleLinear().domain(animalExtent).range([chartHeight, 0]);
+                    const yScale = d3.scaleLog().domain(animalExtent).range([chartHeight, 0]);
 
                     //Creating the x-axis and y-axis, and gridlines
 
@@ -195,6 +213,7 @@
                     // const colorScale = d3.scaleOrdinal()
                     //              .domain(species)
                     //              .range(['purple', 'red', 'black', 'green', 'pink', 'blue', 'lilac', 'yellow', 'grey', 'orange', 'darkgreen', 'brown', 'darkblue', 'lightgreen', 'darkpink']);
+                    const jitter = () => Math.random() * xScale.bandwidth() * 0.8;
 
                     chartArea.selectAll("image").data(clean_data)
                         .join("image")
@@ -203,8 +222,34 @@
                         .attr("opacity", 0.7)
                         .attr("width", 15)
                         .attr("height", 15)
-                        .attr("x", d => xScale(d['Borough']))
+                        .attr("x", d => xScale(d['Borough'])+ jitter())
                         .attr("y", d => yScale(d['# of Animals']));
+
+
+                       // Add x-axis label
+                        svg.append("text")
+                          .attr("class", "axis-label")
+                          .attr("x", width / 2)
+                          .attr("y", height - 10)
+                          .style("text-anchor", "middle")
+                          .text("Borough");
+
+                        // Add y-axis label
+                        svg.append("text")
+                          .attr("class", "axis-label")
+                          .attr("transform", "rotate(-90)")
+                          .attr("x", -height / 2)
+                          .attr("y", 15)
+                          .style("text-anchor", "middle")
+                          .text("Number of Animals at the call");
+
+                        // Add chart title
+                        svg.append("text")
+                          .attr("class", "chart-title")
+                          .attr("x", width / 2)
+                          .attr("y", 25)
+                          .style("text-anchor", "middle")
+                          .text("Animal Rescues by Borough in NYC");
 
                 });
 
@@ -212,14 +257,14 @@
         </script>
     </p>
 
-    <h3> Map </h3>
+    <h2> Vizualization Two: Map </h2>
     <p> This map illustrates the total number of animals rescued in each borough.
         <br>
         We can see Manhattan has the highest number,
         then Staten Island, Queens, Brooklyn, and lastly Bronx.
     </p>
     <p>
-        <svg id="map" height="800" width="800"></svg>
+        <svg id="map" height="800" width="1100"></svg>
         <svg id="legend" width="200" height="450"></svg>
 
         <script>
@@ -251,6 +296,19 @@
                         return colorScale(count);
                     });
 
+                svg.selectAll(".borough-label")
+                    .data(data.features)
+                    .join("text")
+                    .attr("class", "borough-label")
+                    .attr("x", d => path.centroid(d)[0])
+                    .attr("y", d => path.centroid(d)[1])
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .style("fill", "black")
+                    .style("font-weight", "bold")
+                    .text(d => d.properties.Borough);
+
                 const legend = d3.select("#legend"),
                     legendWidth = +legend.attr("width"),
                     legendHeight = +legend.attr("height");
@@ -275,6 +333,16 @@
                     .attr("x", 40)
                     .attr("y", (d, i) => (i + 0.5) * (legendHeight / legendLabels.length) - 36)
                     .text(d => Math.round(d));
+
+
+                  // Add chart title
+                  svg.append("text")
+                    .attr("class", "chart-title")
+                    .attr("x", width / 2)
+                    .attr("y", 780)
+                    .style("text-anchor", "middle")
+                    .text("Map of NYC Boroughs by Counts of Animal Rescues");
+
             });
         </script>
 
