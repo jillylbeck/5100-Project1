@@ -224,17 +224,19 @@
                                   .attr("fill",d => colorScale(d))
                                   .attr("opacity", 0.2);
 
-                    const jitter = () => Math.random() * xScale.bandwidth() * 0.8;
 
-                    chartArea.selectAll("image").data(clean_data)
-                        .join("image")
-                        .attr("r", 4)
-                        .attr("xlink:href", d => data_images[d['Animal Class']])   // using attr here, style would work too
-                        .attr("opacity", 0.7)
-                        .attr("width", 15)
-                        .attr("height", 15)
-                        .attr("x", d => xScale(d['Borough'])+ jitter())
-                        .attr("y", d => yScale(d['# of Animals']));
+
+                      const jitter = () => Math.random() * xScale.bandwidth() * 0.8;
+
+                      chartArea.selectAll("image").data(clean_data)
+                          .join("image")
+                          .attr("r", 4)
+                          .attr("xlink:href", d => data_images[d['Animal Class']])   // using attr here, style would work too
+                          .attr("opacity", 0.7)
+                          .attr("width", 15)
+                          .attr("height", 15)
+                          .attr("x", d => xScale(d['Borough'])+ jitter())
+                          .attr("y", d => yScale(d['# of Animals']));
 
 
                        // Add x-axis label
