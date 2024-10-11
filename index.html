@@ -210,9 +210,20 @@
                     };
 
 
-                    // const colorScale = d3.scaleOrdinal()
-                    //              .domain(species)
-                    //              .range(['purple', 'red', 'black', 'green', 'pink', 'blue', 'lilac', 'yellow', 'grey', 'orange', 'darkgreen', 'brown', 'darkblue', 'lightgreen', 'darkpink']);
+                     const colorScale = d3.scaleOrdinal()
+                                  .domain(boroughs)
+                                  .range(['purple', 'lightgreen', 'yellow', 'lightpink', 'lightblue', ]);
+
+                     chartArea.selectAll("rect")
+                                  .data(boroughs)
+                                  .join("rect")
+                                  .attr("x", d => xScale(d))
+                                  .attr("y", 0)
+                                  .attr("width", xScale.bandwidth())
+                                  .attr("height", chartHeight)
+                                  .attr("fill",d => colorScale(d))
+                                  .attr("opacity", 0.2);
+
                     const jitter = () => Math.random() * xScale.bandwidth() * 0.8;
 
                     chartArea.selectAll("image").data(clean_data)
