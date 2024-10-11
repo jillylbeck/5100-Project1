@@ -1,206 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+
+<head>
     <title>INFO 5100 - Project 1 </title>
-    <ul> 
-        <li> 
-         Jillian Beck - JLB574
+    <ul>
+        <li>
+            Jillian Beck - JLB574
         </li>
-        <li> 
+        <li>
             Hung Ming Tseng - ht495
         </li>
-        <li> 
+        <li>
             Peipei Duan - pd439
         </li>
     </ul>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-  
+
     <style>
-    
-      .legend span {
-        margin-right: 10px;
-      }
-        
-      .gridlines line {
-        stroke: #bbb;
-      }
-      
-      .gridlines .domain {
-        stroke: none;
-      }
-      
-  
+        .legend span {
+            margin-right: 10px;
+        }
+
+        .gridlines line {
+            stroke: #bbb;
+        }
+
+        .gridlines .domain {
+            stroke: none;
+        }
+
+        .borough {
+            stroke: grey;
+            stroke-width: 0.2;
+        }
+
+        .legend-text {
+            font-size: 12px;
+        }
     </style>
 
 </head>
 
-<body> 
+<body>
 
     <h3> Introduction </h3>
-    <p> For our project, we intend to investigate the frequency of animal rescues within NYC Boroughs over a 5 year time frame, and the relationship between animals rescued and their respective species </p>
-    
+    <p> For our project, we intend to investigate the frequency of animal rescues within NYC Boroughs over a 5 year time
+        frame, and the relationship between animals rescued and their respective species </p>
+
     <p>
-    <svg id="graph" height="600" width="800" style="margin-top:50px"> </svg>
-    
-    <script> 
-    d3.csv("Urban_Park_Ranger_Animal_Condition_Response_20241001.csv", d3.autoType)
-    .then( (data) => {
-        console.log(data);
+        <svg id="graph" height="600" width="800" style="margin-top:50px"> </svg>
 
-        const svg = d3.select("#graph");
-        const width = svg.attr("width");
-        const height = svg.attr("height");
-        const margin = { top: 50, right: 50, bottom: 50, left:50};
-        const chartWidth = width - margin.left - margin.right;
-        const chartHeight = height - margin.top - margin.bottom;
-        const graph = svg.append("g").attr("transform","translate("+margin.left+","+margin.top+")");
-        const species = ["Birds", "Deer", "Bat", "Rat", "Squirrel", "Mouse", "Raccoon", "Snake", "Turtle", "Frog", "Fish-numerous quantity", "Raptors", "Dog", "Cat", "Rabbit"];
+        <script>
+            d3.csv("Urban_Park_Ranger_Animal_Condition_Response_20241001.csv", d3.autoType)
+                .then((data) => {
+                    console.log(data);
 
-
-        let annotations = svg.append("g").attr("id","annotations");
-        let chartArea = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);  
+                    const svg = d3.select("#graph");
+                    const width = svg.attr("width");
+                    const height = svg.attr("height");
+                    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+                    const chartWidth = width - margin.left - margin.right;
+                    const chartHeight = height - margin.top - margin.bottom;
+                    const graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    const species = ["Birds", "Deer", "Bat", "Rat", "Squirrel", "Mouse", "Raccoon", "Snake", "Turtle", "Frog", "Fish-numerous quantity", "Raptors", "Dog", "Cat", "Rabbit"];
 
 
-        data.forEach(d => {
-                  if (d["Animal Class"] === "Domestic") { //since the "Animal Class" column lumps cats, dogs,  and rabbits under "Domestic," here we're filtering through the data to seperate these animals into their own animal class categories
-                      if (d["Species Description"].includes("Rabbit")) {
-                          d["Animal Class"] = "Rabbit";
-                      } else if (d["Species Description"].includes("Cat")) {
-                          d["Animal Class"] = "Cat";
-                      } else if (d["Species Description"].includes("Dog")) {
-                          d["Animal Class"] = "Dog";
-                      } 
-                  }
-              });
+                    let annotations = svg.append("g").attr("id", "annotations");
+                    let chartArea = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
-          
-          data.forEach(d => {
-                  if (d["Animal Class"] === "Terrestrial Reptile or Amphibian") { 
-                      if (d["Species Description"].includes("Snake")) {
-                          d["Animal Class"] = "Snake";
-                      } else if (d["Species Description"].includes("Turtle")) {
-                          d["Animal Class"] = "Turtle";
-                      } else if (d["Species Description"].includes("Frog")) {
-                          d["Animal Class"] = "Frog";
-                      }
-                  }
-              });
 
-            data.forEach(d => {
-                  if (d["Animal Class"] === "Small Mammals - RVS") { //RVS denotes animals that were called in as having rabies, the "Non-RVS" category is for those same species but for calls without rabies. 
-                      if (d["Species Description"].includes("Bat")) {
-                          d["Animal Class"] = "Bat";
-                      } else if (d["Species Description"].includes("Mouse")) {
-                          d["Animal Class"] = "Mouse";
-                      } else if (d["Species Description"].includes("Rat")) {
-                          d["Animal Class"] = "Rat";
-                      } else if (d["Species Description"].includes("Squirrel")) {
-                          d["Animal Class"] = "Squirrel";
-                      } else if (d["Species Description"].includes("Raccoon")) {
-                          d["Animal Class"] = "Raccoon";
-                      }
-                  }
-              });
+                    data.forEach(d => {
+                        if (d["Animal Class"] === "Domestic") { //since the "Animal Class" column lumps cats, dogs,  and rabbits under "Domestic," here we're filtering through the data to seperate these animals into their own animal class categories
+                            if (d["Species Description"].includes("Rabbit")) {
+                                d["Animal Class"] = "Rabbit";
+                            } else if (d["Species Description"].includes("Cat")) {
+                                d["Animal Class"] = "Cat";
+                            } else if (d["Species Description"].includes("Dog")) {
+                                d["Animal Class"] = "Dog";
+                            }
+                        }
+                    });
 
-              data.forEach(d => {
-                  if (d["Animal Class"] === "Small Mammals - non RVS") { //logging non RVS species to be clumped in same category of RVS 
-                      if (d["Species Description"].includes("Bat")) {
-                          d["Animal Class"] = "Bat";
-                      } else if (d["Species Description"].includes("Mouse")) {
-                          d["Animal Class"] = "Mouse";
-                      } else if (d["Species Description"].includes("Rat")) {
-                          d["Animal Class"] = "Rat";
-                      } else if (d["Species Description"].includes("Squirrel")) {
-                          d["Animal Class"] = "Squirrel";
-                      } else if (d["Species Description"].includes("Raccoon")) {
-                          d["Animal Class"] = "Raccoon";
-                      }
-                  }
-              });
 
-        clean_data = data.filter(d => {
-              return d["# of Animals"] >= 1 && d["# of Animals"] <= 50;
-              });
-        
-        console.log("Filtered Data:", clean_data);
+                    data.forEach(d => {
+                        if (d["Animal Class"] === "Terrestrial Reptile or Amphibian") {
+                            if (d["Species Description"].includes("Snake")) {
+                                d["Animal Class"] = "Snake";
+                            } else if (d["Species Description"].includes("Turtle")) {
+                                d["Animal Class"] = "Turtle";
+                            } else if (d["Species Description"].includes("Frog")) {
+                                d["Animal Class"] = "Frog";
+                            }
+                        }
+                    });
 
-        
-        //Scale creations
+                    data.forEach(d => {
+                        if (d["Animal Class"] === "Small Mammals - RVS") { //RVS denotes animals that were called in as having rabies, the "Non-RVS" category is for those same species but for calls without rabies. 
+                            if (d["Species Description"].includes("Bat")) {
+                                d["Animal Class"] = "Bat";
+                            } else if (d["Species Description"].includes("Mouse")) {
+                                d["Animal Class"] = "Mouse";
+                            } else if (d["Species Description"].includes("Rat")) {
+                                d["Animal Class"] = "Rat";
+                            } else if (d["Species Description"].includes("Squirrel")) {
+                                d["Animal Class"] = "Squirrel";
+                            } else if (d["Species Description"].includes("Raccoon")) {
+                                d["Animal Class"] = "Raccoon";
+                            }
+                        }
+                    });
 
-        const boroughs = Array.from(new Set(clean_data.map(d => d['Borough'])));
-        const xScale = d3.scaleBand().domain(boroughs).range([0,chartWidth]);
-   
-        const animalExtent = d3.extent(clean_data, d => d['# of Animals']);
-        const yScale = d3.scaleLinear().domain(animalExtent).range([chartHeight, 0]);
+                    data.forEach(d => {
+                        if (d["Animal Class"] === "Small Mammals - non RVS") { //logging non RVS species to be clumped in same category of RVS 
+                            if (d["Species Description"].includes("Bat")) {
+                                d["Animal Class"] = "Bat";
+                            } else if (d["Species Description"].includes("Mouse")) {
+                                d["Animal Class"] = "Mouse";
+                            } else if (d["Species Description"].includes("Rat")) {
+                                d["Animal Class"] = "Rat";
+                            } else if (d["Species Description"].includes("Squirrel")) {
+                                d["Animal Class"] = "Squirrel";
+                            } else if (d["Species Description"].includes("Raccoon")) {
+                                d["Animal Class"] = "Raccoon";
+                            }
+                        }
+                    });
 
-        //Creating the x-axis and y-axis, and gridlines
+                    clean_data = data.filter(d => {
+                        return d["# of Animals"] >= 1 && d["# of Animals"] <= 50;
+                    });
 
-        //x-axis
-        let bottomAxis = d3.axisBottom(xScale)
-        let bottomGridlines = d3.axisBottom(xScale)
-                                .tickSize(-chartHeight-10)
-                                .tickFormat("")
+                    console.log("Filtered Data:", clean_data);
+
+
+                    //Scale creations
+
+                    const boroughs = Array.from(new Set(clean_data.map(d => d['Borough'])));
+                    const xScale = d3.scaleBand().domain(boroughs).range([0, chartWidth]);
+
+                    const animalExtent = d3.extent(clean_data, d => d['# of Animals']);
+                    const yScale = d3.scaleLinear().domain(animalExtent).range([chartHeight, 0]);
+
+                    //Creating the x-axis and y-axis, and gridlines
+
+                    //x-axis
+                    let bottomAxis = d3.axisBottom(xScale)
+                    let bottomGridlines = d3.axisBottom(xScale)
+                        .tickSize(-chartHeight - 10)
+                        .tickFormat("")
                     annotations.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
-                    .call(bottomAxis);
-                    
+                        .attr("class", "x axis")
+                        .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+                        .call(bottomAxis);
+
                     annotations.append("g")
-                    .attr("class", "x gridlines")
-                    .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
-                    .call(bottomGridlines);
+                        .attr("class", "x gridlines")
+                        .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+                        .call(bottomGridlines);
 
-        //y-axis
-        let leftAxis = d3.axisLeft(yScale)
-        let leftGridlines = d3.axisLeft(yScale)
-                              .tickSize(-chartWidth-10)
-                              .tickFormat("")
-                    
-          annotations.append("g")
-                              .attr("class", "y axis")
-                              .attr("transform",`translate(${margin.left-10},${margin.top})`)
-                              .call(leftAxis)
-          annotations.append("g")
-                              .attr("class", "y gridlines")
-                              .attr("transform",`translate(${margin.left-10},${margin.top})`)
-                              .call(leftGridlines);
+                    //y-axis
+                    let leftAxis = d3.axisLeft(yScale)
+                    let leftGridlines = d3.axisLeft(yScale)
+                        .tickSize(-chartWidth - 10)
+                        .tickFormat("")
 
-          const data_images = {
-              "Rabbit": "images/rabbit.png", // <a href="https://www.flaticon.com/free-icons/rabbit" title="rabbit icons">Rabbit icons created by PLANBSTUDIO - Flaticon</a>
-              "Cat": "images/cat.png", //<a href="https://www.flaticon.com/free-icons/black-cat" title="black cat icons">Black cat icons created by PLANBSTUDIO - Flaticon</a>
-              "Dog": "images/dog.png", //<a href="https://www.flaticon.com/free-icons/dog" title="dog icons">Dog icons created by PLANBSTUDIO - Flaticon</a>
-              "Raptors": "images/hawk-bird-animal-shape.png", //<a href="https://www.flaticon.com/free-icons/hawk" title="hawk icons">Hawk icons created by Freepik - Flaticon</a>
-              "Fish-numerous quantity": "images/fish.png", //<a href="https://www.flaticon.com/free-icons/fish" title="fish icons">Fish icons created by Freepik - Flaticon</a>
-              "Frog": "images/frog.png", //<a href="https://www.flaticon.com/free-icons/frog" title="frog icons">Frog icons created by Mihimihi - Flaticon</a>
-              "Turtle": "images/turtle.png", //<a href="https://www.flaticon.com/free-icons/turtle" title="turtle icons">Turtle icons created by PLANBSTUDIO - Flaticon</a>
-              "Snake": "images/snake.png", //<a href="https://www.flaticon.com/free-icons/serpent" title="serpent icons">Serpent icons created by Unknown Depths - Flaticon</a>
-              "Raccoon": "images/raccoon.png", //<a href="https://www.flaticon.com/free-icons/raccoon" title="raccoon icons">Raccoon icons created by Icongeek26 - Flaticon </a>
-              "Rat": "images/rat.png", //<a href="https://www.flaticon.com/free-icons/rat" title="rat icons">Rat icons created by Vector Stall - Flaticon</a>
-              "Mouse": "images/mouse.png", //<a href="https://www.flaticon.com/free-icons/rat" title="rat icons">Rat icons created by G-CAT - Flaticon</a>
-              "Squirrel": "images/squirrel.png", //<a href="https://www.flaticon.com/free-icons/squirrel" title="squirrel icons">Squirrel icons created by PLANBSTUDIO - Flaticon</a>
-              "Bat": "images/bat.png", // <a href="https://www.flaticon.com/free-icons/bat" title="bat icons">Bat icons created by Freepik - Flaticon</a>
-              "Deer": "images/deer.png", //<a href="https://www.flaticon.com/free-icons/deer" title="deer icons">Deer icons created by Freepik - Flaticon</a>
-              "Birds": "images/hummingbird.png" // <a href="https://www.flaticon.com/free-icons/bird" title="bird icons">Bird icons created by Freepik - Flaticon</a>
-          };
+                    annotations.append("g")
+                        .attr("class", "y axis")
+                        .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+                        .call(leftAxis)
+                    annotations.append("g")
+                        .attr("class", "y gridlines")
+                        .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+                        .call(leftGridlines);
 
-
-         // const colorScale = d3.scaleOrdinal()
-          //              .domain(species)
-          //              .range(['purple', 'red', 'black', 'green', 'pink', 'blue', 'lilac', 'yellow', 'grey', 'orange', 'darkgreen', 'brown', 'darkblue', 'lightgreen', 'darkpink']);
-        
-          chartArea.selectAll("image").data(clean_data)
-                              .join("image")
-                              .attr("r", 4)
-                              .attr("xlink:href", d=> data_images[d['Animal Class']])   // using attr here, style would work too
-                              .attr("opacity", 0.7)
-                              .attr("width", 15)
-                              .attr("height", 15)
-                              .attr("x", d => xScale(d['Borough']))
-                              .attr("y", d => yScale(d['# of Animals']));
-
-        });
+                    const data_images = {
+                        "Rabbit": "images/rabbit.png", // <a href="https://www.flaticon.com/free-icons/rabbit" title="rabbit icons">Rabbit icons created by PLANBSTUDIO - Flaticon</a>
+                        "Cat": "images/cat.png", //<a href="https://www.flaticon.com/free-icons/black-cat" title="black cat icons">Black cat icons created by PLANBSTUDIO - Flaticon</a>
+                        "Dog": "images/dog.png", //<a href="https://www.flaticon.com/free-icons/dog" title="dog icons">Dog icons created by PLANBSTUDIO - Flaticon</a>
+                        "Raptors": "images/hawk-bird-animal-shape.png", //<a href="https://www.flaticon.com/free-icons/hawk" title="hawk icons">Hawk icons created by Freepik - Flaticon</a>
+                        "Fish-numerous quantity": "images/fish.png", //<a href="https://www.flaticon.com/free-icons/fish" title="fish icons">Fish icons created by Freepik - Flaticon</a>
+                        "Frog": "images/frog.png", //<a href="https://www.flaticon.com/free-icons/frog" title="frog icons">Frog icons created by Mihimihi - Flaticon</a>
+                        "Turtle": "images/turtle.png", //<a href="https://www.flaticon.com/free-icons/turtle" title="turtle icons">Turtle icons created by PLANBSTUDIO - Flaticon</a>
+                        "Snake": "images/snake.png", //<a href="https://www.flaticon.com/free-icons/serpent" title="serpent icons">Serpent icons created by Unknown Depths - Flaticon</a>
+                        "Raccoon": "images/raccoon.png", //<a href="https://www.flaticon.com/free-icons/raccoon" title="raccoon icons">Raccoon icons created by Icongeek26 - Flaticon </a>
+                        "Rat": "images/rat.png", //<a href="https://www.flaticon.com/free-icons/rat" title="rat icons">Rat icons created by Vector Stall - Flaticon</a>
+                        "Mouse": "images/mouse.png", //<a href="https://www.flaticon.com/free-icons/rat" title="rat icons">Rat icons created by G-CAT - Flaticon</a>
+                        "Squirrel": "images/squirrel.png", //<a href="https://www.flaticon.com/free-icons/squirrel" title="squirrel icons">Squirrel icons created by PLANBSTUDIO - Flaticon</a>
+                        "Bat": "images/bat.png", // <a href="https://www.flaticon.com/free-icons/bat" title="bat icons">Bat icons created by Freepik - Flaticon</a>
+                        "Deer": "images/deer.png", //<a href="https://www.flaticon.com/free-icons/deer" title="deer icons">Deer icons created by Freepik - Flaticon</a>
+                        "Birds": "images/hummingbird.png" // <a href="https://www.flaticon.com/free-icons/bird" title="bird icons">Bird icons created by Freepik - Flaticon</a>
+                    };
 
 
-    </script>
-    </p> 
+                    // const colorScale = d3.scaleOrdinal()
+                    //              .domain(species)
+                    //              .range(['purple', 'red', 'black', 'green', 'pink', 'blue', 'lilac', 'yellow', 'grey', 'orange', 'darkgreen', 'brown', 'darkblue', 'lightgreen', 'darkpink']);
+
+                    chartArea.selectAll("image").data(clean_data)
+                        .join("image")
+                        .attr("r", 4)
+                        .attr("xlink:href", d => data_images[d['Animal Class']])   // using attr here, style would work too
+                        .attr("opacity", 0.7)
+                        .attr("width", 15)
+                        .attr("height", 15)
+                        .attr("x", d => xScale(d['Borough']))
+                        .attr("y", d => yScale(d['# of Animals']));
+
+                });
+
+
+        </script>
+    </p>
+
+    <h3> Map </h3>
+    <p> This map illustrates the number of animals rescued in each borough.
+        <br>
+        We can see Manhattan has the highest number,
+        then Staten Island, Queens, Brooklyn, and lastly Bronx.
+    </p>
+    <p>
+        <svg id="map" height="800" width="800" style="margin-top:50px">
+
+        </svg>
+        <svg id="legend" width="200" height="400"></svg>
+
+
+
+        <script>
+            const svg = d3.select("#map"),
+                width = +svg.attr("width"),
+                height = +svg.attr("height");
+
+            // Set up a projection
+            const projection = d3.geoMercator()
+                .scale(65000)
+                .center([-74.0060, 40.7128])
+                .translate([width / 2, height / 2]);
+
+            const path = d3.geoPath().projection(projection);
+
+            d3.json("merged_borough.geojson").then(data => {
+                const counts = data.features.map(feature => feature.properties['# of Animals'] || 0);
+
+                const colorScale = d3.scaleQuantile()
+                    .domain(counts)
+                    .range(["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#b30000"]);
+
+                svg.selectAll(".borough")
+                    .data(data.features)
+                    .enter().append("path")
+                    .attr("class", "borough")
+                    .attr("d", path)
+                    .attr("fill", d => {
+                        const count = d.properties['# of Animals'] || 0;
+                        return colorScale(count);
+                    });
+
+                const legend = d3.select("#legend"),
+                    legendWidth = +legend.attr("width"),
+                    legendHeight = +legend.attr("height");
+
+                const quantileLabels = colorScale.quantiles();
+
+                // Include the maximum value for the legend
+                const legendLabels = [0].concat(quantileLabels);
+
+                // Calculate the height of each rectangle
+                const rectHeight = legendHeight / legendLabels.length;
+
+                legendLabels.forEach((d, i) => {
+                    legend.append("rect")
+                        .attr("x", 10)
+                        .attr("y", i * rectHeight)
+                        .attr("width", 20)
+                        .attr("height", rectHeight)
+                        .attr("fill", colorScale(d));
+                });
+
+
+
+                legend.selectAll(".legend-text")
+                    .data(legendLabels)
+                    .enter().append("text")
+                    .attr("class", "legend-text")
+                    .attr("x", 40)
+                    .attr("y", (d, i) => (i + 0.5) * (legendHeight / legendLabels.length) - 50)
+                    .text(d => Math.round(d));
+
+
+
+
+            })
+
+
+
+
+
+        </script>
+
+
+
+
+
+
+    </p>
+
+
+
+
+
+
+
 </body>
