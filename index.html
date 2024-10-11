@@ -35,7 +35,7 @@
         }
 
         .legend-text {
-            font-size: 12px;
+            font-size: 10px;
         }
     </style>
 
@@ -219,17 +219,15 @@
         then Staten Island, Queens, Brooklyn, and lastly Bronx.
     </p>
     <p>
-        <svg id="map" height="800" width="800" style="margin-top:50px">
-
-        </svg>
-        <svg id="legend" width="200" height="400"></svg>
+        <svg id="map" height="800" width="800"></svg>
+        <svg id="legend" width="200" height="450"></svg>
 
 
 
         <script>
-            const svg = d3.select("#map"),
-                width = +svg.attr("width"),
-                height = +svg.attr("height");
+            const svg = d3.select("#map");
+            const width = +svg.attr("width");
+            const height = +svg.attr("height");
 
             const projection = d3.geoMercator()
                 .scale(65000)
@@ -263,6 +261,7 @@
 
                 const legendLabels = [0].concat(quantileLabels);
 
+
                 const rectHeight = legendHeight / legendLabels.length;
 
                 legendLabels.forEach((d, i) => {
@@ -281,7 +280,7 @@
                     .enter().append("text")
                     .attr("class", "legend-text")
                     .attr("x", 40)
-                    .attr("y", (d, i) => (i + 0.5) * (legendHeight / legendLabels.length) - 50)
+                    .attr("y", (d, i) => (i + 0.5) * (legendHeight / legendLabels.length) - 36)
                     .text(d => Math.round(d));
 
 
