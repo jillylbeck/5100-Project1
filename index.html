@@ -231,7 +231,6 @@
                 width = +svg.attr("width"),
                 height = +svg.attr("height");
 
-            // Set up a projection
             const projection = d3.geoMercator()
                 .scale(65000)
                 .center([-74.0060, 40.7128])
@@ -262,10 +261,8 @@
 
                 const quantileLabels = colorScale.quantiles();
 
-                // Include the maximum value for the legend
                 const legendLabels = [0].concat(quantileLabels);
 
-                // Calculate the height of each rectangle
                 const rectHeight = legendHeight / legendLabels.length;
 
                 legendLabels.forEach((d, i) => {
